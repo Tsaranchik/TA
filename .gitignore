@@ -1,4 +1,5 @@
 *.docx
 .idea
-*.txt
-__pychache__
+code2.txt
+out_states.txt
+__pycache__

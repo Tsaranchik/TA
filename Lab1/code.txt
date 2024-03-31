@@ -1,0 +1,19 @@
+using namespace std:
+
+int main() {
+    for (int i = 0; i < 10; ++i) {
+        for (int j = 0; j < 10; ++j) {
+            if (i * j % 2 == 0) {
+                cout << i * i + j * j << "\n";
+                continue;
+            }
+            cout << i + j << "\n";
+        }
+    }
+
+    for (int i = 20; i >= 0; --i) {
+        cout << i + i * 3 << "\n";
+    }
+
+    return 0;
+}
