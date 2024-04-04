@@ -70,7 +70,7 @@ class Calc:
             # Если символ - оператор, то добавляем его в стек
             elif char in "+-*/":  # x8
                 # Если перед оператором ничего, то возвращаем False
-                if prev_char != " " and prev_char != "(" and (prev_char != "" and char == "-"):  # x9
+                if prev_char != " " or prev_char != "(" or (prev_char != "" and char == "-"):  # x9
                     return False  # y5
 
                 stack.append(char)  # y9
