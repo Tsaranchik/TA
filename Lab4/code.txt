@@ -1,0 +1,8 @@
+a = getdata()
+b = getdata()
+
+if (a <= b) {
+   outdata("equal or less")
+} else {
+   outdata("hmm... not equal, i guess")
+}
