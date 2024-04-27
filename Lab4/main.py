@@ -2,7 +2,7 @@ from typing import Any
 
 num_line = 0
 variables = dict()
-output = open("output.txt", "w", encoding="utf-8")
+output = open("out_states.txt", "w", encoding="utf-8")
 
 
 def print_state(state):
@@ -17,14 +17,19 @@ def isdigit(num: str) -> bool:
         return False
 
 
-def replace_variable_to_value(string) -> None:
+def replace_variable_to_value(string) -> str:
+    new_string = []
     for i in range(len(string)):
         if string[i] in variables:
-            string[i] = variables[string[i]]
+            new_string.append(str(variables[string[i]]))
 
         elif not isdigit(string[i]) and string[i] not in \
                 {"-", "+", "*", "/", "(", ")", ".", " ", ">", "<", "==", "<=", ">=", "&", "|", "!"}:
             raise ValueError(f"Variable <{string[i]}> is not defined")
+        else:
+            new_string.append(string[i])
+
+    return ''.join(new_string)
 
 
 class Calc:
@@ -33,7 +38,7 @@ class Calc:
 
     def __init__(self, math_expression) -> None:
         self.__math_expression = math_expression
-        replace_variable_to_value(self.__math_expression)
+        self.__math_expression = replace_variable_to_value(self.__math_expression)
 
     def __check_expression(self) -> bool:
         if (not all(char.isdigit() or char in "+-*/" or char.isspace() or char in "()"
@@ -61,7 +66,7 @@ class Calc:
                 stack.pop()
 
             elif char in "+-*/":
-                if prev_char != " " or prev_char != "(" or (prev_char != "" and char == "-"):
+                if prev_char != ' ' and prev_char != "(" and (prev_char != "" and char == "-"):
                     return False
 
                 stack.append(char)
@@ -104,6 +109,8 @@ class Calc:
             if isdigit(item):
                 stack.append(int(item))
             else:
+                if len(stack) < 2:
+                    raise ValueError("Invalid expression")
                 num2 = stack.pop()
                 num1 = stack.pop()
 
@@ -168,7 +175,7 @@ def get_variable(line) -> str:
 
 def calculate_bool_expression(expression) -> str:
     expression = expression.replace("(", " ( ").replace(")", " ) ").split()
-    replace_variable_to_value(expression)
+    expression = replace_variable_to_value(expression)
 
     if len({">", "<", "==", ">=", "<=", "!="} & set(expression)) == 0:
         raise ValueError("Invalid boolean expression")
@@ -211,39 +218,40 @@ def main() -> None:
             continue
 
         elif " = " in line:  # x7
-            line = line.split(" = ")  # y11
+            splitered_line = line.split(" = ")  # y11
 
             print_state(3)
-            if len(line) != 2:  # x8
+            if len(splitered_line) != 2:  # x8
                 print_error("Invalid variable definition")  # y12
 
-            if not line[0][0].isalpha() and "getdata" not in line[1] and '"' not in line[1]:  # x9
+            if not line[0][0].isalpha() and "getdata" not in splitered_line[1] and '"' not in splitered_line[1]:  # x9
                 print_error("Variable name must start with a letter")  # y13
 
-            if "getdata" in line[1]:  # x10
-                variables[line[0]] = input()  # y14
+            if "getdata" in splitered_line[1]:  # x10
+                variables[splitered_line[0]] = input()  # y14
                 continue
 
-            if '"' in line[1]:  # x11
-                variables[line[0]] = line[1].replace('"', "")  # y15
+            if '"' in splitered_line[1]:  # x11
+                variables[splitered_line[0]] = splitered_line[1].replace('"', "")  # y15
                 continue
 
             e = -1  # y16
             print_state(4)
             try:  # x3
-                result = Calc(line[1]).calculate()  # y17
+                calc = Calc(splitered_line[1])
+                result = calc.calculate()  # y17
             except Exception as er:
                 e = er  # y18
 
             print_state(5)
             if e != -1:  # x12
                 try:  # x3
-                    result = calculate_bool_expression(line[1])  # y19
+                    result = calculate_bool_expression(splitered_line[1])  # y19
                 except:
                     print_error(e)  # y8
 
             print_state(6)
-            variables[line[0]] = result  # y20
+            variables[splitered_line[0]] = result  # y20
 
         elif line.startswith("outdata"):  # x13
             try:  # x3
