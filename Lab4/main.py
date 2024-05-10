@@ -24,7 +24,7 @@ def replace_variable_to_value(string) -> str:
             new_string.append(str(variables[string[i]]))
 
         elif not isdigit(string[i]) and string[i] not in \
-                {"-", "+", "*", "/", "(", ")", ".", " ", ">", "<", "==", "<=", ">=", "&", "|", "!"}:
+                {"-", "+", "*", "/", "(", ")", " ", ">", "<", "==", "<=", ">=", "&", "|", "!=", "!"}:
             raise ValueError(f"Variable <{string[i]}> is not defined")
         else:
             new_string.append(string[i])
@@ -177,13 +177,13 @@ def calculate_bool_expression(expression) -> str:
     expression = expression.replace("(", " ( ").replace(")", " ) ").split()
     expression = replace_variable_to_value(expression)
 
-    if len({">", "<", "==", ">=", "<=", "!="} & set(expression)) == 0:
+    if len({"!=", ">", "<", "==", ">=", "<=", "!"} & set(expression)) == 0:
         raise ValueError("Invalid boolean expression")
 
-    expression = [str(item) for item in expression]
-    expression = eval(" ".join(expression))
+    new_expression = [str(item) for item in expression]
+    result = eval(expression)
 
-    return expression
+    return result
 
 
 def main() -> None:
