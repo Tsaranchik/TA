@@ -3,3 +3,5 @@
 code2.txt
 out_states.txt
 __pycache__
+*.iml
+out/
